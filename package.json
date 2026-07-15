@@ -1,0 +1,10 @@
+{
+  "name": "spin-wheel",
+  "version": "1.0.0",
+  "description": "A drum-roll spin wheel raffle/randomizer, static site (no build step).",
+  "private": true,
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "license": "MIT"
+}
