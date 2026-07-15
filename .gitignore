@@ -141,3 +141,65 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+Here's that content reformatted as a ready-to-paste `.gitignore` file:
+
+```gitignore
+# ─── Node.js ──────────────────────────────────────────────
+node_modules/
+.npm/
+.yarn/
+.pnpm/
+# (Note: lock files like package-lock.json and yarn.lock
+#  are usually COMMITTED, not ignored — remove these if you use them)
+# package-lock.json
+# yarn.lock
+
+# ─── Frontend build output ─────────────────────────────────
+build/
+dist/
+.next/
+.nuxt/
+.parcel/
+.cache/
+
+# ─── Logs ──────────────────────────────────────────────────
+logs/
+*.log
+*.tmp
+debug.log
+
+# ─── Environment files ─────────────────────────────────────
+.env
+.env.local
+.env.production
+.env.development
+
+# ─── Databases ─────────────────────────────────────────────
+db.sqlite3
+db.postgres
+db.mongodb
+
+# ─── OS / Generated files ──────────────────────────────────
+.DS_Store
+Thumbs.db
+Icon\r
+
+# ─── Editor / IDE preferences ──────────────────────────────
+.vscode/
+.idea/
+*.sublime-project
+.vimrc
+
+# ─── Version control meta ──────────────────────────────────
+.git/
+.svn/
+.hg/
+.bzr/
+
+# ─── Temporary & cache files ───────────────────────────────
+tmp/
+temp/
+cache/
+*.bak
+*~
