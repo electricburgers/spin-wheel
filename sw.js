@@ -1,7 +1,7 @@
 // Service worker for offline-first PWA support. Paths are all relative to this file's own
 // location (not root-absolute) so caching still works when the site is served from a GitHub
 // Pages repo subpath (username.github.io/repo-name/).
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const CACHE_NAME = `spin-wheel-${CACHE_VERSION}`;
 
 const PRECACHE_URLS = [

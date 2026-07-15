@@ -708,6 +708,7 @@ function main() {
   const durationInputs = Array.from(document.querySelectorAll('input[name="durationPreset"]'));
   const highDistinctionToggle = $('highDistinctionToggle');
   const colorblindSelect = $('colorblindSelect');
+  const fixAllContrastBtn = $('fixAllContrastBtn');
   const themeSelect = $('themeSelect');
   const volumeSlider = $('volumeSlider');
   const muteBtn = $('muteBtn');
@@ -931,15 +932,17 @@ function main() {
     colorInput.setAttribute('aria-label', `Color for ${option.text || 'option'}`);
     const badge = document.createElement('span');
     badge.className = 'contrast-badge';
-    const fixBtn = document.createElement('button');
-    fixBtn.type = 'button';
-    fixBtn.className = 'contrast-fix-btn';
-    fixBtn.textContent = 'Fix contrast';
+    // Fixing a failing color lives in Settings > Appearance ("Fix all contrast issues") so it
+    // can act on every option at once, instead of a button on every single row — that button
+    // only appearing on some rows (whichever currently fail) was also the main reason the
+    // delete button's position varied row to row.
     function refreshBadge() {
       const check = pickTextColor(option.color, 7);
       badge.textContent = check.passes ? `AAA ${check.ratio.toFixed(1)}:1` : `${check.ratio.toFixed(1)}:1`;
       badge.className = `contrast-badge ${check.passes ? 'pass' : 'fail'}`;
-      fixBtn.hidden = check.passes;
+      badge.title = check.passes
+        ? `${check.ratio.toFixed(2)}:1 against ${check.color} text — passes AAA (7:1)`
+        : `${check.ratio.toFixed(2)}:1 against ${check.color} text — fails AAA (7:1). Fix from Settings > Appearance.`;
     }
     refreshBadge();
     colorInput.addEventListener('input', () => {
@@ -949,16 +952,7 @@ function main() {
       refreshBadge();
       resizeAndRenderWheel();
     });
-    fixBtn.addEventListener('click', () => {
-      const suggestion = nearestCompliantShade(option.color, 7);
-      option.color = suggestion.hex;
-      colorInput.value = suggestion.hex;
-      markDirty();
-      persistState();
-      refreshBadge();
-      resizeAndRenderWheel();
-    });
-    colorWrap.append(colorInput, badge, fixBtn);
+    colorWrap.append(colorInput, badge);
 
     const deleteBtn = document.createElement('button');
     deleteBtn.type = 'button';
@@ -1600,6 +1594,24 @@ function main() {
     markDirty();
     persistState();
     resizeAndRenderWheel();
+  });
+  fixAllContrastBtn.addEventListener('click', () => {
+    let fixedCount = 0;
+    state.options.forEach((option) => {
+      if (!pickTextColor(option.color, 7).passes) {
+        option.color = nearestCompliantShade(option.color, 7).hex;
+        fixedCount += 1;
+      }
+    });
+    if (fixedCount === 0) {
+      announce('All option colors already meet AAA contrast.');
+      return;
+    }
+    markDirty();
+    persistState();
+    renderOptionsList();
+    resizeAndRenderWheel();
+    announce(`Fixed contrast for ${fixedCount} option${fixedCount === 1 ? '' : 's'}.`);
   });
   themeSelect.addEventListener('change', () => {
     state.theme = themeSelect.value;

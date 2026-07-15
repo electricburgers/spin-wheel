@@ -502,18 +502,14 @@ input[type="range"] { flex: 1 1 120px; min-height: 44px; accent-color: var(--acc
 }
 .contrast-badge.pass { background: rgba(11, 173, 165, .18); color: var(--text-primary); border: 1px solid var(--accent); }
 .contrast-badge.fail { background: rgba(167, 25, 25, .18); color: var(--text-primary); border: 1px solid var(--danger); }
-.contrast-fix-btn {
-  min-height: 32px;
-  padding: 4px 8px;
-  font-size: 0.68rem;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  background: var(--bg-input);
-  cursor: pointer;
-}
 
+/* margin-left:auto pins this to the right edge of whichever flex line it wraps onto,
+   regardless of how much space the preceding fields (option text length, badge text length)
+   take up — that's what keeps it in the same spot from row to row, so mass-deleting entries
+   is a repeated click at one fixed screen position instead of a moving target. */
 .option-delete {
   min-width: 44px; min-height: 44px;
+  margin-left: auto;
   border: 1px solid var(--border);
   background: var(--bg-input);
   color: var(--danger);
