@@ -1,0 +1,1060 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root,[data-theme="hc-dark"]{
+  --bg-primary:#000;--bg-card:#0d0d0d;--bg-card-alt:#141414;--bg-input:#1c1c1c;--bg-hover:#242424;
+  --border:#2e2e2e;--border-light:#404040;--border-strong:#5c5c5c;--text-primary:#fff;--text-secondary:#ccc;--text-muted:#aeaeae;
+  --accent-cyan:#00ffff;--accent-magenta:#ff44aa;--accent-gold:#ffee00;--accent-green:#44ff44;
+  --accent-red:#ff4444;--accent-orange:#ffaa00;--shadow:0 4px 24px rgba(0,0,0,.8);--shadow-lg:0 16px 48px rgba(0,0,0,.85),0 2px 10px rgba(0,0,0,.7);
+  --row-stripe:rgba(255,255,255,.055);--radius:8px;--radius-lg:12px;
+  --font-display:'Space Grotesk',sans-serif;--font-body:'Inter',sans-serif;
+  --transition:.18s ease;--row-pad:8px;
+  --btn-idle-bg:#1c1c1c;--btn-correct-bg:#0d2e0d;--btn-incorrect-bg:#2e0d0d;--btn-used-bg:#141414;
+  --pts-pos-bg:rgba(68,255,68,.18);--pts-pos-border:rgba(68,255,68,.55);--pts-pos-fg:#8dff8d;
+  --pts-neg-bg:rgba(255,68,68,.2);--pts-neg-border:rgba(255,68,68,.6);--pts-neg-fg:#ffa3a3;
+  --pts-nil-bg:rgba(255,255,255,.06);--pts-nil-border:rgba(255,255,255,.12);
+  --on-accent-cyan:#000;--on-accent-gold:#000;--on-badge:#000;
+  --item-border:#B4552F;--item-fill-checked:#B4552F;
+  --njcb-border:#5B84A8;--njcb-fill-checked:#5B84A8;
+  --check-icon-color:#ffffff;
+  --badge-gold-fg:#ffee00;--badge-green-fg:#44ff44;
+  /* AAA (7:1) text-safe variants of the brand accents, for use as TEXT on neutral surfaces
+     (bg-card/bg-card-alt/bg-input) — kept separate from --accent-* so borders, focus rings,
+     and button fills can stay at full brand saturation without dragging text below AAA. */
+  --txt-cyan:#00ffff;--txt-magenta:#ff72d8;--txt-red:#ff8282;--txt-orange:#ffaa00;
+  --accent-cyan-solid:#00ffff;--danger-solid-bg:#a52c2c;
+  /* Beer Round highlight: a solid dark amber-brown (not a see-through gold rgba — this is a
+     literal container background, not a layer stacked over other content) so the whole
+     question/wager block reads as "golden" at a glance instead of just its border. Chosen
+     dark enough that every text color already used inside a beer-round block (white, cyan,
+     magenta, muted gray, and the gold badge/border itself) still clears WCAG AA against it —
+     see the contrast check run when this was added. */
+  --beer-bg:#2a2410;--beer-border:#ffee00;
+}
+[data-theme="hc-light"]{
+  --bg-primary:#f5f5f5;--bg-card:#fff;--bg-card-alt:#f0f0f0;--bg-input:#e8e8e8;--bg-hover:#dcdcdc;
+  --border:#b0b0b0;--border-light:#949494;--border-strong:#8a8a8a;--text-primary:#000;--text-secondary:#2a2a2a;--text-muted:#454545;
+  --accent-cyan:#006688;--accent-magenta:#bb0055;--accent-gold:#e0b123;--accent-green:#10a710;
+  --accent-red:#cc0000;--accent-orange:#994400;--shadow:0 4px 24px rgba(0,0,0,.12);--shadow-lg:0 16px 48px rgba(0,0,0,.28),0 2px 10px rgba(0,0,0,.18);
+  --row-stripe:rgba(0,0,0,.048);
+  --btn-idle-bg:#e8e8e8;--btn-correct-bg:#8ee89a;--btn-incorrect-bg:#eeaaaa;--btn-used-bg:#f0f0f0;
+  --pts-pos-bg:#0c7a0c;--pts-pos-border:#0a6a0a;--pts-pos-fg:#fff;
+  --pts-neg-bg:#c01818;--pts-neg-border:#a81414;--pts-neg-fg:#fff;
+  --pts-nil-bg:rgba(0,0,0,.07);--pts-nil-border:rgba(0,0,0,.22);
+  --on-accent-cyan:#fff;--on-accent-gold:#000;--on-badge:#fff;
+  --item-border:#B4552F;--item-fill-checked:#B4552F;
+  --njcb-border:#3B5B7A;--njcb-fill-checked:#3B5B7A;
+  --badge-gold-fg:#55420e;--badge-green-fg:#0a500a;
+  --txt-cyan:#004b64;--txt-magenta:#8c0040;--txt-red:#900000;--txt-orange:#723300;
+  --accent-cyan-solid:#006081;--danger-solid-bg:#b60000;
+  /* A true bright gold (like --accent-gold) only clears 3:1 non-text contrast against a
+     background this dark — anything as light as --bg-card-alt forces the border down to a
+     muddy, muted brown-olive to pass at all. Rather than accept that duller color, give the
+     Beer Round card its own barely-there warm cream background (still ~17:1 for the existing
+     black team-name text) so the border can be a real golden yellow instead. */
+  --beer-bg:#f1e7d0;--beer-border:#9f7804;
+}
+[data-theme="hc-light"] .header{background:linear-gradient(180deg,var(--bg-primary) 60%,transparent)!important}
+/* COLOR VISION MODES — independent of theme.
+   1 = red-green (deuteranopia/protanopia): swaps green/red pass-fail colors for blue/orange.
+   2 = blue-yellow (tritanopia): keeps green/red (tritanopes see these fine) but swaps the
+       blue/gold accent pair, which is where tritanopes actually lose contrast. */
+[data-theme="hc-dark"][data-cb="1"]{
+  --accent-green:#3399ff;--accent-red:#ff8800;
+  --btn-correct-bg:#0d1f2e;--btn-incorrect-bg:#2e1f0d;
+  --pts-pos-bg:rgba(51,153,255,.2);--pts-pos-border:rgba(51,153,255,.6);--pts-pos-fg:#8fc6ff;
+  --pts-neg-bg:rgba(255,136,0,.2);--pts-neg-border:rgba(255,136,0,.6);--pts-neg-fg:#ffc182;
+  --badge-green-fg:#55bbff;--txt-red:#ff9008;--danger-solid-bg:#884900;
+}
+[data-theme="hc-light"][data-cb="1"]{
+  --accent-green:#0067c5;--accent-red:#cc6600;
+  --btn-correct-bg:#cfe6fb;--btn-incorrect-bg:#ffe1bf;
+  --pts-pos-bg:#0067c5;--pts-pos-border:#005aae;--pts-pos-fg:#fff;
+  --pts-neg-bg:#b35900;--pts-neg-border:#9c4e00;--pts-neg-fg:#fff;
+  --badge-green-fg:#004585;--txt-red:#6d3600;--danger-solid-bg:#8c4600;
+}
+[data-theme="hc-dark"][data-cb="2"]{
+  --accent-gold:#ff66cc;--accent-cyan:#00cc88;
+  --item-border:#ff66cc;--item-fill-checked:#ff66cc;
+  --njcb-border:#00cc88;--njcb-fill-checked:#00cc88;
+  --badge-gold-fg:#ff96fc;--accent-cyan-solid:#00cc88;
+  /* The pink/magenta gold-substitute already clears 7:1 on the normal --bg-card-alt (unlike
+     real gold), so beer round doesn't need the special cream background here. */
+  --beer-bg:var(--bg-card-alt);--beer-border:#ff66cc;
+}
+[data-theme="hc-light"][data-cb="2"]{
+  --accent-gold:#c2007a;--accent-cyan:#008060;
+  --item-border:#e0008e;--item-fill-checked:#e0008e;
+  --njcb-border:#008564;--njcb-fill-checked:#008564;
+  --badge-gold-fg:#880056;--txt-cyan:#004f3b;--accent-cyan-solid:#00654c;
+  --beer-bg:var(--bg-card-alt);--beer-border:#c2007a;
+}
+
+[data-density="compact"]{--row-pad:4px}
+[data-density="relaxed"]{--row-pad:12px}
+
+[data-theme="hc-dark"][data-stripe="1"],[data-stripe="1"]{--row-stripe:rgba(255,255,255,.11)}
+[data-theme="hc-dark"][data-stripe="2"],[data-stripe="2"]{--row-stripe:rgba(255,255,255,.19)}
+[data-theme="hc-light"][data-stripe="1"]{--row-stripe:rgba(0,0,0,.09)}
+[data-theme="hc-light"][data-stripe="2"]{--row-stripe:rgba(0,0,0,.16)}
+
+/* overflow-x lives on body only, not html: with both elements declaring it, the CSS overflow-
+   propagation rules split scrolling ambiguously between html and body instead of the browser
+   treating the viewport as one scroll container — which breaks position:sticky (.header,
+   .mini-progress) on mobile, where the document itself is what scrolls. Leaving it on body
+   only lets body's overflow propagate to the viewport as the single, well-defined scroller. */
+html{font-size:16px;max-width:100%}
+/* touch-action:manipulation app-wide: without it, two rapid taps on rapidly re-rendered
+   controls (e.g. the standings Random button, which replaces its own DOM node on every tap)
+   can be read by mobile browsers as a double-tap-to-zoom gesture instead of two clicks. */
+body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-primary);min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden;max-width:100%;overflow-anchor:none;touch-action:manipulation}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg-primary)}::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:3px}
+
+/* HEADER */
+/* z-index kept above .drag-handle (101) and every other app-layout child: .header creates its
+   own stacking context, so a lower value here would let the resize handle's higher z-index win
+   and paint over the settings overlay (which lives inside .header) wherever their boxes overlap
+   on screen — that's the "drag handle pokes through the settings panel" bug. */
+.header{position:sticky;top:0;z-index:200;background:linear-gradient(180deg,var(--bg-primary) 60%,transparent);padding:calc(10px + env(safe-area-inset-top)) 16px 10px}
+/* flex-wrap here (not on .toolbar) means Save/Load/Gear wrap onto a new line as one group
+   under the logo when they don't fit — .toolbar itself no longer wraps its own buttons
+   individually, so it's all-or-nothing instead of one icon peeling off at a time. */
+.header-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;row-gap:8px}
+.logo{font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:var(--accent-cyan);text-transform:uppercase;letter-spacing:2px}
+.logo span{color:var(--accent-magenta)}
+.toolbar{display:flex;gap:6px;align-items:center;flex-wrap:nowrap}
+.toolbar>button,.btn{font-family:var(--font-body);font-size:.78rem;font-weight:600;padding:5px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-card);color:var(--text-primary);cursor:pointer;transition:var(--transition);white-space:nowrap}
+.toolbar>button:hover,.btn:hover{background:var(--bg-hover);border-color:var(--border-light)}
+.btn-accent{background:var(--accent-cyan-solid)!important;color:var(--on-accent-cyan)!important;border-color:var(--accent-cyan-solid)!important;font-weight:700!important}
+.btn-accent:hover{opacity:.85}
+.btn-danger{border-color:var(--accent-red)!important;color:var(--txt-red)!important}
+.btn-danger:hover{background:rgba(255,68,68,.13)!important}
+
+.settings-toggle-btn{font-family:var(--font-body);font-size:.78rem;font-weight:600;padding:5px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-card);color:var(--text-muted);cursor:pointer;transition:var(--transition)}
+.settings-toggle-btn:hover{background:var(--bg-hover);color:var(--text-primary)}
+.settings-toggle-btn.active{background:var(--accent-cyan-solid);color:var(--on-accent-cyan);border-color:var(--accent-cyan-solid)}
+
+/* Overlay, not in-flow: .header is position:sticky (a valid containing block for an
+   absolutely-positioned child), so this floats above the app instead of pushing the
+   scoreboard down every time it opens. */
+.settings-panel{display:none;position:absolute;top:100%;left:16px;right:16px;margin-top:8px;padding:10px 16px;border:1px solid var(--border-strong);border-radius:var(--radius-lg);background:var(--bg-card);box-shadow:var(--shadow-lg);z-index:150;max-height:calc(100vh - 80px);overflow-y:auto;animation:slideDown .18s ease}
+/* Deployed-panel-over-page shadows: a plain dark shadow disappears against this app's
+   near-black dark background, so it gets its own pale glow to read as "floating above" the
+   page instead; light mode already has a light background to contrast against, so it just
+   gets a stronger/darker version of the normal shadow instead of a glow. Zero x/y offset
+   (blur-only) so the halo spreads evenly on all four sides instead of pooling underneath.
+   Opacity/blur bumped up from the first pass (was .16/.10 and .32/.24) — still theme-aware,
+   just a clearly more visible halo in both themes. */
+[data-theme="hc-dark"] .settings-panel{box-shadow:0 0 52px rgba(255,255,255,.30),0 0 16px rgba(255,255,255,.20)}
+[data-theme="hc-light"] .settings-panel{box-shadow:0 0 52px rgba(0,0,0,.46),0 0 16px rgba(0,0,0,.34)}
+.settings-panel.settings-visible{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));column-gap:24px}
+.settings-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 4px;border-bottom:1px solid var(--border)}
+.settings-controls{display:inline-flex;align-items:center;gap:4px;flex-shrink:0}
+@keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+/* Closing affordance at the bottom of the overlay, in addition to re-tapping the gear icon.
+   Padding + line-height keep the tappable area comfortably above the ~44px touch-target
+   guideline; color/background reuse the same input/button token pair used everywhere else
+   in the app, so contrast is already covered by the existing design system. */
+.settings-close-btn{grid-column:1/-1;width:100%;margin-top:6px;padding:12px 10px;font-family:var(--font-display);font-size:.8rem;font-weight:700;letter-spacing:1.5px;line-height:1;text-align:center;text-transform:uppercase;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-input);color:var(--text-primary);cursor:pointer;transition:var(--transition);touch-action:manipulation}
+.settings-close-btn:hover{background:var(--bg-hover)}
+
+/* ADVANCED SETTINGS — collapsible group holding the rarer controls (point adjustments,
+   legacy CSV/XLSM export) so the default settings list stays short. */
+.settings-advanced-toggle-row{grid-column:1/-1;margin-top:2px}
+.settings-advanced-toggle{width:100%;display:flex;align-items:center;justify-content:center;gap:6px;font-family:var(--font-body);font-size:.78rem;font-weight:700;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-input);color:var(--text-secondary);cursor:pointer;transition:var(--transition);text-transform:uppercase;letter-spacing:.5px}
+.settings-advanced-toggle:hover{background:var(--bg-hover);color:var(--text-primary)}
+.settings-advanced-toggle .adv-chevron{transition:transform .25s;display:inline-block}
+.settings-advanced-toggle.open .adv-chevron{transform:rotate(180deg)}
+.settings-advanced-group{grid-column:1/-1;display:none;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));column-gap:24px}
+.settings-advanced-group.open{display:grid}
+
+.settings-btn{font-family:var(--font-body);font-size:.8rem;font-weight:600;padding:5px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-card);color:var(--text-primary);cursor:pointer;transition:var(--transition);white-space:nowrap}
+.settings-btn:hover{background:var(--bg-hover)}
+.settings-btn.active{background:var(--accent-cyan-solid);color:var(--on-accent-cyan);border-color:var(--accent-cyan-solid)}
+@media(max-width:600px){
+  .settings-panel.settings-visible{grid-template-columns:1fr}
+  .settings-row{padding:10px 2px;gap:10px}
+  .settings-row .size-label{font-size:.78rem}
+  .settings-controls .settings-btn{padding:7px 12px;font-size:.85rem}
+  .settings-meta{padding-top:8px}
+}
+.theme-select{font-family:var(--font-body);font-size:.72rem;font-weight:700;padding:4px 22px 4px 8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-card);color:var(--text-primary);cursor:pointer;appearance:none;-webkit-appearance:none;outline:none;transition:var(--transition);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center}
+.theme-select:hover{background-color:var(--bg-hover)}
+.theme-select:focus{border-color:var(--accent-cyan);box-shadow:0 0 0 2px rgba(0,255,255,.13)}
+.theme-select option{background:var(--bg-card);color:var(--text-primary)}
+/* Custom color-vision dropdown — a native <select> can't wrap an option's text onto a
+   second line, and its closed box auto-sizes to the longest option ("Red-Green
+   (deuteranopia/protanopia)"), which overflowed the viewport at narrower widths. This
+   shows only the short label when closed and wraps the detail onto its own line in the
+   open menu, with JS-clamped left/right alignment so the menu itself never runs off-screen. */
+.cv-select{position:relative;display:inline-block}
+.cv-select-btn{font-family:var(--font-body);font-size:.72rem;font-weight:700;padding:4px 8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-card);color:var(--text-primary);cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:var(--transition)}
+.cv-select-btn:hover{background:var(--bg-hover)}
+.cv-select-btn:focus-visible{outline:2px solid var(--accent-cyan-solid);outline-offset:2px}
+.cv-select-arrow{font-size:.6rem;color:var(--text-muted);transition:transform .15s}
+.cv-select.open .cv-select-arrow{transform:rotate(180deg)}
+.cv-select-menu{position:absolute;top:calc(100% + 4px);left:0;right:auto;min-width:100%;width:max-content;max-width:min(260px,calc(100vw - 24px));margin:0;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);z-index:300;list-style:none;padding:4px;display:none;max-height:60vh;overflow-y:auto}
+.cv-select.open .cv-select-menu{display:block}
+.cv-select-menu[data-align="right"]{left:auto;right:0}
+.cv-select-menu li{padding:6px 8px;border-radius:6px;cursor:pointer;font-size:.78rem;color:var(--text-primary);display:flex;flex-direction:column;gap:1px;line-height:1.25}
+.cv-select-menu li:hover{background:var(--bg-hover)}
+.cv-select-menu li[aria-selected="true"]{font-weight:700;color:var(--txt-cyan)}
+.cv-opt-sub{font-size:.68rem;font-weight:500;color:var(--text-muted)}
+.size-label{font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.sep{width:1px;height:18px;background:var(--border-light);margin:0 2px;flex-shrink:0}
+
+.resume-banner{background:var(--bg-card);border:1px solid var(--accent-gold);border-radius:var(--radius-lg);padding:16px;margin:0 16px 12px;display:none}
+.resume-banner.show{display:block}
+.resume-banner p{margin-bottom:12px;color:var(--badge-gold-fg);font-weight:600}
+.resume-banner .btn-row{display:flex;gap:8px}
+
+/* LAYOUT */
+.app-layout{display:flex;height:calc(100vh - 60px);overflow:hidden}
+.col-left{flex:1;min-width:300px;padding:0 16px 40px;overflow-y:auto;overflow-x:hidden;max-width:100%;container-type:inline-size;container-name:scorecol;overflow-anchor:none}
+.col-right{width:380px;min-width:200px;max-width:60vw;height:100%;overflow-y:auto;background:var(--bg-card);display:flex;flex-direction:column;flex-shrink:0;border-left:1px solid var(--border)}
+.drag-handle{position:relative;width:6px;flex-shrink:0;height:100%;background:var(--border);cursor:col-resize;z-index:101;transition:background .15s}
+.drag-handle:hover,.drag-handle.dragging{background:var(--accent-cyan)}
+.drag-handle::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:2px;height:32px;border-radius:1px;background:var(--text-muted);opacity:.5}
+.drag-handle:hover::after,.drag-handle.dragging::after{background:#000;opacity:.8}
+body.col-resizing{cursor:col-resize!important;user-select:none!important}
+body.col-resizing *{cursor:col-resize!important;user-select:none!important}
+
+/* MINI PROGRESS BAR — shows which round the host is currently working through so they don't
+   have to scroll back up to find it. It's the first child of .col-left (rendered by JS, not
+   static markup) so on desktop, where .col-left is its own scrolling pane, position:sticky
+   pins it to that pane's own top edge. On mobile .col-left isn't a scroll container (the
+   document is), so the sticky context bubbles up to the page — there it needs to sit below
+   the always-sticky .header instead of underneath it, hence the --header-h offset swapped in
+   by the media query below (kept in sync by a ResizeObserver in app.js, since the header's
+   rendered height varies with font-size settings and notch safe-area insets). */
+.mini-progress{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:8px;padding:8px 12px;margin:0 -16px 10px;background:var(--bg-card-alt);border-bottom:1px solid var(--border-strong);cursor:pointer;transition:var(--transition);touch-action:manipulation}
+.mini-progress:hover{background:var(--bg-hover)}
+.mp-round{font-family:var(--font-display);font-weight:700;flex-shrink:0}
+.mp-count{font-family:var(--font-body);font-size:.8rem;font-weight:600;color:var(--text-secondary);white-space:nowrap}
+.mp-bar{flex:1;height:6px;border-radius:3px;background:var(--bg-input);overflow:hidden;min-width:40px}
+.mp-fill{height:100%;background:var(--accent-cyan-solid);border-radius:3px;transition:width .25s ease}
+.mp-pct{font-family:var(--font-display);font-size:.8rem;font-weight:700;color:var(--text-secondary);flex-shrink:0;min-width:2.4em;text-align:right}
+.mini-progress.mp-complete{justify-content:center}
+.mp-label{font-family:var(--font-body);font-size:.82rem;font-weight:700;color:var(--badge-green-fg)}
+
+/* Base (desktop-hidden) state for the mobile bottom sheet's peek strip + backdrop — declared
+   here, before the @media block below, so that block's display:flex/block override actually
+   wins at narrow widths instead of losing to this display:none on source-order (same selector
+   specificity either way, so whichever comes LAST in the file wins — these must come first). */
+.sidebar-backdrop{display:none}
+.mobile-scores-peek{display:none}
+
+/* Settings backdrop dims the page behind the dropdown exactly like the scores drawer's own
+   backdrop dims the page behind it — same rgba/opacity/transition values, reused rather than
+   invented fresh. Unlike the scores backdrop this isn't gated to a mobile media query: the
+   settings dropdown itself opens at every viewport width, so its dimming does too. z-index
+   190 sits below .header's own 200 (not above it) so the header bar and the panel it contains
+   — both already inside that same stacking context — stay crisp on top of the dim instead of
+   being darkened along with the rest of the page. */
+.settings-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .2s ease;z-index:190}
+.settings-backdrop.show{opacity:1;pointer-events:auto}
+
+@media(max-width:900px){
+  /* Bottom sheet with a persistent "peek" strip: a slim bar stays docked to the bottom of the
+     screen at all times, showing a live top-3 ticker so scores are glanceable without opening
+     anything. Tapping it (or the grab handle once open) slides up a full sheet with the sort
+     controls and complete list, overlaying the page instead of displacing it — the main content
+     never needs reserved padding for it since it's never part of the layout flow. */
+  .app-layout{flex-direction:column;height:auto;overflow:visible}
+  /* .col-left keeps overflow-y:auto from the desktop rule above, but on mobile its height is
+     never clipped (app-layout is height:auto here) so it never actually scrolls internally —
+     the document does. Left as overflow-y:auto anyway, .col-left still counts as a "scroll
+     container" for position:sticky purposes and hijacks .mini-progress's containing block away
+     from the real (document-level) scroller, so it visually never sticks. overflow:visible
+     (both axes, not just -y, to dodge the same x/y overflow auto-promotion this fixes at the
+     html/body level above) hands that back to the document, matching .header's behavior. */
+  .col-left{overflow:visible}
+  .drag-handle{display:none}
+  .col-right{position:fixed;left:0;right:0;bottom:0;top:auto;width:100%!important;min-width:0;max-width:none;height:75vh;max-height:75vh;border-left:none;border-top:1px solid var(--border-strong);border-radius:var(--radius-lg) var(--radius-lg) 0 0;z-index:250;transform:translateY(100%);transition:transform .28s ease;padding-bottom:env(safe-area-inset-bottom)}
+  .col-right.open{transform:translateY(0)}
+  /* Extra bottom padding (not just the 40px other viewports get) so the last section clears
+     the fixed peek strip with visible breathing room once scrolled all the way down — the
+     strip floats on top of this padding rather than being part of the scrollable flow, so
+     without the extra room the last box's bottom edge sits flush against the strip's top. */
+  .col-left{padding-bottom:88px}
+  /* .col-left is no longer its own scroll container here (the document is), so
+     .mini-progress's sticky context bubbles up to the same one .header already uses — it
+     needs to sit below the header's actual rendered height instead of top:0, or the two
+     would overlap once both are stuck. */
+  .mini-progress{top:var(--header-h,64px)}
+
+  .sidebar-backdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .28s ease;z-index:240}
+  .sidebar-backdrop.show{opacity:1;pointer-events:auto}
+
+  /* Grab handle at the very top of the open sheet — a dedicated drag target for swipe-down-to-
+     close, kept separate from .sidebar-header so dragging it doesn't also fire the header's own
+     tap-to-close handler. --text-muted (not --border-strong, which only measures ~2.9:1 against
+     --bg-card in dark mode — under the WCAG 1.4.11 3:1 floor for a meaningful UI component) is
+     reused instead: it's the same token already used for every collapse chevron in the app, and
+     it clears >=3:1 non-text contrast against --bg-card in both themes. */
+  .sheet-grab-handle{width:100%;padding:8px 0 4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;touch-action:none;cursor:grab}
+  .sheet-grab-handle::after{content:'';width:36px;height:4px;border-radius:2px;background:var(--text-muted)}
+
+  /* Halo shadow above the sheet — same theme-aware treatment as .settings-panel (dark mode
+     needs a pale glow to read as "floating" against its near-black background; light mode gets
+     a stronger plain shadow). Zero offset so it reads on all sides, not just pooling below,
+     matching the settings panel's own halo values exactly rather than inventing new opacities. */
+  [data-theme="hc-dark"] .col-right.open{box-shadow:0 0 40px rgba(255,255,255,.16),0 0 10px rgba(255,255,255,.10)}
+  [data-theme="hc-light"] .col-right.open{box-shadow:0 0 40px rgba(0,0,0,.32),0 0 10px rgba(0,0,0,.24)}
+
+  /* PEEK STRIP — always-visible bottom bar (hidden only while the sheet itself is open). Sits
+     below the open sheet in z-order (245 < 250) but that only matters for the brief cross-fade,
+     since .msp-hidden removes it from hit-testing and paint the instant the sheet opens.
+     3-column grid (not flex) so the centered label is centered against the FULL strip width,
+     not just the space left over after the chevron — a flex row with the chevron as a trailing
+     item would visually off-center the middle content toward the left. touch-action:none since
+     there's no inner horizontal-scrolling content anymore to carve out an exception for (see the
+     removed mini ticker) — all touch movement here is the JS swipe-up-to-open gesture's alone. */
+  /* left/right inset (not edge-to-edge) matches .col-left's own 16px side padding, so the
+     strip reads as the same width as the section boxes stacked above it instead of a wider
+     full-bleed bar. */
+  .mobile-scores-peek{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;position:fixed;left:16px;right:16px;bottom:0;z-index:245;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:var(--bg-card);border-top:1px solid var(--border-strong);border-left:1px solid var(--border-strong);border-right:1px solid var(--border-strong);border-radius:var(--radius-lg) var(--radius-lg) 0 0;cursor:pointer;touch-action:none;transition:opacity .18s ease,transform .18s ease}
+  /* Delay ONLY on the hide-transition (this class is the destination state when the sheet
+     OPENS, so its own transition value — not the base rule's — is what the browser uses for
+     that direction): the peek stays fully visible for .26s first, long enough for the chevron's
+     .28s rotation below to actually play out, THEN fades away over .16s. Without this delay the
+     opacity fade and the rotation would run simultaneously and the flip would be lost in the
+     wash before it's even halfway done. Closing (this class removed) still uses the base rule's
+     un-delayed transition, so the strip reappears immediately rather than after a matching lag. */
+  .mobile-scores-peek.msp-hidden{opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .16s ease .26s,transform .16s ease .26s}
+  /* Subtle shadow on the collapsed strip — deliberately much quieter than the settings panel's
+     halo (this sits flush against the screen's own edges, so only the top edge separating it
+     from the page content needs any separation at all; a full glow would be overkill for a
+     strip that's visible at all times, not just while something is freshly deployed). */
+  [data-theme="hc-dark"] .mobile-scores-peek{box-shadow:0 -3px 12px rgba(255,255,255,.07)}
+  [data-theme="hc-light"] .mobile-scores-peek{box-shadow:0 -3px 12px rgba(0,0,0,.14)}
+  /* Column 1 is left empty on purpose — an unfilled 1fr grid track still reserves the same
+     width as column 3's chevron, which is what keeps column 2 centered against the full strip
+     rather than just the leftover space; it doesn't need visible content of its own to do that. */
+  .msp-label{grid-column:2;justify-self:center;display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--txt-cyan);white-space:nowrap}
+  /* Matches .section-header .chevron's size (1.1rem) so every collapse/expand chevron in the
+     app reads as the same size/scale of control, rather than this one dominating the row. */
+  .msp-chevron{grid-column:3;justify-self:end;font-size:1.1rem;line-height:1;color:var(--text-muted);transition:transform .28s ease}
+  /* Points up while collapsed (the sheet is below, waiting to rise) and flips to point down —
+     back toward where it collapses to — once deployed. */
+  .mobile-scores-peek[aria-expanded="true"] .msp-chevron{transform:rotate(180deg)}
+}
+
+/* SIDEBAR */
+/* Grid (not flex+space-between) so the title is centered against the FULL header width, not
+   just the space left over after the chevron — same 3-column trick used by .mobile-scores-peek
+   (empty 1fr on the left balances the chevron's own 1fr on the right, no visible left-side
+   content needed for the centering to work). */
+.sidebar-header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:10px 14px;cursor:pointer;user-select:none;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg-card-alt)}
+.sidebar-header:hover{background:var(--bg-hover)}
+.sidebar-header h3{grid-column:2;justify-self:center;font-family:var(--font-display);font-size:.95rem;text-transform:uppercase;letter-spacing:1px;color:var(--txt-cyan)}
+/* Matches .msp-chevron's size (1.1rem) so the arrow reads the same whether the sheet is
+   docked (peek strip) or deployed (this header) — was .7rem, visibly smaller than every
+   other collapse/expand chevron in the app. */
+.sidebar-toggle{grid-column:3;justify-self:end;font-size:1.1rem;color:var(--text-muted);transition:transform .3s}
+/* Base glyph (▲) points up while docked; rotating 180deg once deployed (.open) turns it into a
+   down-pointing arrow — same up-when-docked/down-when-deployed convention as the peek strip's
+   own chevron, just kept on this header instead of swapped for a plain ▼ + no rotation, so the
+   flip is still an animated transition rather than an instant swap. */
+.col-right.open .sidebar-toggle{transform:rotate(180deg)}
+.sidebar-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;overflow-anchor:none}
+
+.sort-controls{display:flex;gap:4px;padding:8px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sort-btn{flex:1;min-width:0;font-family:var(--font-display);font-size:.86rem;font-weight:700;padding:8px 4px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-input);color:var(--text-secondary);cursor:pointer;transition:var(--transition);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;touch-action:manipulation}
+.sort-btn:hover{background:var(--bg-hover);color:var(--text-primary)}
+.sort-btn.active{background:var(--accent-cyan-solid);color:var(--on-accent-cyan);border-color:var(--accent-cyan-solid);box-shadow:0 0 6px rgba(0,255,255,.3)}
+.sort-mode-label{padding:6px 12px 4px;font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;font-weight:600;border-bottom:1px solid var(--border);flex-shrink:0}
+
+.scores-list{padding:8px 12px;flex:1;overflow-y:auto}
+.score-row{display:flex;align-items:center;padding:var(--row-pad) 12px;border-bottom:1px solid var(--border);margin-left:-12px;margin-right:-12px}
+.score-row:last-child{border-bottom:none}
+.score-row:nth-child(even){background:var(--row-stripe)}
+.sr-rank{font-family:var(--font-display);font-weight:800;font-size:1.15rem;width:2.2rem;height:2.2rem;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-right:8px;background:#e8e8e8;color:#000;border:1px solid #b0b0b0}
+.sr-rank-1{background:#ffe066;color:#000;border:2px solid #c8900a}
+.sr-rank-2{background:#d8d8dc;color:#000;border:2px solid #888898}
+.sr-rank-3{background:#e8b98a;color:#000;border:2px solid #8b4510}
+[data-theme="hc-dark"] .sr-rank{background:#3a3a3a;color:#fff;border:1px solid #555}
+[data-theme="hc-dark"] .sr-rank-1{background:#6e5600;color:#fff;border:2px solid #ffd700}
+[data-theme="hc-dark"] .sr-rank-2{background:#55555f;color:#fff;border:2px solid #c8c8d0}
+[data-theme="hc-dark"] .sr-rank-3{background:#6b3d15;color:#fff;border:2px solid #d68a42}
+.sr-name{flex:1;font-weight:600;font-size:.85rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr-score{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--txt-cyan);margin-left:8px;flex-shrink:0}
+
+/* SECTIONS */
+/* --border-strong (not --border) so every top-level container (Event Details, Teams, Round N,
+   Final Results, etc.) has an edge that's >=3:1 against --bg-primary in every theme — --border
+   alone was only ~1.5-2:1 against the page background, i.e. not a real visual boundary. */
+.section{background:var(--bg-card);border:1px solid var(--border-strong);border-radius:var(--radius-lg);margin-bottom:10px;overflow:hidden}
+/* Subtle default background (distinct from .section-body's bg-card) so a clickable header
+   reads as its own control at a glance, not just on hover. --bg-card-alt vs --text-primary is
+   >=18:1 in both themes, so this never threatens the header text's own AA contrast. */
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;user-select:none;transition:var(--transition);border-left:3px solid transparent;background:var(--bg-card-alt)}
+.section-header:hover{background:var(--bg-hover)}
+.section-header h2{font-family:var(--font-display);font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;flex-wrap:wrap;gap:4px}
+.section-header .chevron{transition:transform .3s;color:var(--text-muted);font-size:1.1rem;flex-shrink:0}
+.section.collapsed .section-body{display:none}
+.section.collapsed .chevron{transform:rotate(-90deg)}
+.section-body{padding:0 14px 14px}
+.section.round-complete>.section-header{border-left-width:6px;border-left-color:var(--accent-green)}
+
+label{display:block;font-size:.72rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+input[type="text"],input[type="number"],input[type="date"]{width:100%;padding:7px 10px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-body);font-size:.9rem;outline:none;transition:var(--transition)}
+input:focus{border-color:var(--accent-cyan);box-shadow:0 0 0 2px rgba(0,255,255,.13)}
+/* color-scheme tells the browser which native-control palette to use for the date input's
+   own calendar-picker icon and popup (so the icon isn't a near-invisible dark glyph on our
+   dark theme's input background) — this is the standards-based fix, not a filter/invert hack. */
+[data-theme="hc-dark"] input[type="date"]{color-scheme:dark}
+[data-theme="hc-light"] input[type="date"]{color-scheme:light}
+.date-native{cursor:pointer;width:auto;max-width:170px}
+.quiz-id-input{width:auto;max-width:130px}
+input:disabled{opacity:.5;cursor:not-allowed}
+input[list]{padding-right:26px;background-image:linear-gradient(45deg,transparent 50%,var(--text-muted) 50%),linear-gradient(135deg,var(--text-muted) 50%,transparent 50%);background-position:calc(100% - 16px) 55%,calc(100% - 11px) 55%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+input[list]::-webkit-calendar-picker-indicator{opacity:0}
+[role="button"]:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--accent-cyan);outline-offset:2px}
+[role="button"]{outline:none}
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.meta-grid .full{grid-column:1/-1}
+/* Required-before-scoring fields (Quiz ID, Location) — same visual language as the
+   team guess-missing state so both validation cues read consistently. */
+.field.field-invalid>label{color:var(--txt-orange)}
+.field.field-invalid input{border-color:var(--accent-orange);box-shadow:0 0 0 2px rgba(255,170,0,.18)}
+
+/* TEAM ENTRY */
+/* align-items:start (not center): the name column's stacked label+input+checks is taller than
+   the guess column's label+input, so a "center" row would offset the Guess label below Team N
+   instead of level with it. */
+.team-entry{display:grid;grid-template-columns:1fr 5.4rem auto;gap:8px;align-items:start;padding:10px 0;border-bottom:1px solid var(--border)}
+.team-entry.has-adj{grid-template-columns:1fr 5.4rem auto auto}
+.team-entry:last-of-type{border-bottom:none}
+.team-name-cell{display:flex;flex-direction:column;gap:7px;min-width:0}
+.team-number{font-family:var(--font-display);font-size:.66rem;color:var(--text-muted);letter-spacing:1px}
+.team-name-cell>input[type="text"]{width:100%}
+.team-checks{display:flex;flex-direction:row;flex-wrap:wrap;gap:8px}
+.check-label{position:relative;display:inline-flex;align-items:center;gap:7px;font-size:.85rem;font-weight:700;cursor:pointer;padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg-input);white-space:nowrap;transition:var(--transition);letter-spacing:.3px;margin-bottom:0!important;color:var(--text-muted)}
+/* Native checkbox is kept for real keyboard/screen-reader semantics but rendered invisible —
+   accent-color can't guarantee the checkmark glyph's own contrast (browser-chosen, unverifiable),
+   so the visible box + checkmark below is fully custom-drawn and contrast-audited instead. */
+.check-input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;margin:0;cursor:pointer}
+.check-box{width:22px;height:22px;flex-shrink:0;border-radius:5px;box-sizing:border-box;position:relative;background:transparent;transition:var(--transition)}
+/* Outline-until-checked: unchecked is a bordered outline with no fill, checked is a
+   solid fill — checked/unchecked is signaled by shape+border as well as color, so it
+   isn't lost for users who can't perceive the fill color at all. */
+.item-check .check-box{border:2px solid var(--item-border)}
+.njcb-check .check-box{border:2px solid var(--njcb-border)}
+.item-check .check-input:checked+.check-box{background:var(--item-fill-checked);border-color:var(--item-fill-checked)}
+.njcb-check .check-input:checked+.check-box{background:var(--njcb-fill-checked);border-color:var(--njcb-fill-checked)}
+.item-check .check-input:checked+.check-box::after,.njcb-check .check-input:checked+.check-box::after{
+  content:'';position:absolute;left:6px;top:2px;width:6px;height:11px;
+  border:solid var(--check-icon-color);border-width:0 3px 3px 0;transform:rotate(45deg);
+}
+.check-input:focus-visible+.check-box{outline:2px solid var(--accent-cyan-solid);outline-offset:2px}
+.item-check{color:var(--item-border);border-color:var(--item-border);background:var(--bg-input)}
+.item-check.is-checked{background:var(--item-fill-checked);color:var(--check-icon-color);border-color:var(--item-fill-checked)}
+.njcb-check{color:var(--njcb-border);border-color:var(--njcb-border);background:var(--bg-input)}
+.njcb-check.is-checked{background:var(--njcb-fill-checked);color:var(--check-icon-color);border-color:var(--njcb-fill-checked)}
+.team-guess-cell>label{font-size:.66rem}
+.team-guess-cell.guess-missing>label{color:var(--txt-orange)}
+.team-guess-cell.guess-missing input{border-color:var(--accent-orange);box-shadow:0 0 0 2px rgba(255,170,0,.18)}
+.guess-warn{display:block;font-size:.58rem;font-weight:700;color:var(--txt-orange);letter-spacing:.3px;margin-top:2px}
+
+/* PER-TEAM ADJ */
+.adj-wrap{display:flex;flex-direction:column;align-items:center;gap:5px;align-self:center}
+.remove-team{align-self:center}
+.adj-chip{font-family:var(--font-display);font-size:.72rem;font-weight:700;padding:5px 7px;border-radius:6px;border:1px solid var(--border);background:var(--bg-input);color:var(--text-muted);cursor:pointer;transition:var(--transition);white-space:nowrap;min-width:34px;text-align:center;line-height:1}
+.adj-chip:hover{background:var(--bg-hover);border-color:var(--border-light);color:var(--text-primary)}
+.adj-chip.adj-active{color:var(--txt-orange);border-color:var(--accent-orange);background:rgba(255,170,0,.1)}
+.adj-stepper{display:flex;align-items:center;flex-shrink:0}
+.adj-stepper button{width:1.5rem;height:1.5rem;border:1px solid var(--border-light);background:var(--bg-input);color:var(--text-primary);font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+.adj-stepper button:first-child{border-radius:5px 0 0 5px}
+.adj-stepper button:last-child{border-radius:0 5px 5px 0}
+.adj-stepper button:hover{background:var(--bg-hover)}
+.adj-val{min-width:2rem;height:1.5rem;display:flex;align-items:center;justify-content:center;background:var(--bg-card);border-top:1px solid var(--border-light);border-bottom:1px solid var(--border-light);font-family:var(--font-display);font-weight:700;font-size:.75rem}
+.adj-val.pos{color:var(--badge-green-fg)}
+.adj-val.neg{color:var(--txt-red)}
+.remove-team button{width:1.6rem;height:1.6rem;border-radius:50%;border:1px solid var(--accent-red);background:none;color:var(--txt-red);font-size:1rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+.remove-team button:hover{background:rgba(255,68,68,.15)}
+
+#addTeamBtn{margin-top:10px;width:100%;padding:8px;font-family:var(--font-display);text-transform:uppercase;letter-spacing:1px}
+
+.round-label{display:inline-block;font-family:var(--font-display);font-size:.66rem;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:1px}
+.rl-1{background:rgba(0,255,255,.13);color:var(--txt-cyan)}
+.rl-2{background:rgba(255,68,170,.13);color:var(--txt-magenta)}
+.rl-3{background:rgba(255,238,0,.13);color:var(--badge-gold-fg)}
+.rl-4{background:rgba(255,170,0,.13);color:var(--txt-orange)}
+/* line-height:1 keeps the taller 1rem badge from adding extra height to its header row —
+   without it, a header with a badge (e.g. Final Results' "ascending") ends up a few px taller
+   than a plain header with none (e.g. Craft Prize Drawing). */
+.round-badge{font-family:var(--font-body);font-size:1rem;line-height:1;font-weight:700;padding:1px 8px;border-radius:4px;border:1px solid currentColor}
+.round-badge.rb-partial{background:rgba(255,238,0,.13);color:var(--badge-gold-fg)}
+.round-badge.rb-done{background:rgba(68,255,68,.1);color:var(--badge-green-fg)}
+
+/* QUESTION BLOCKS — collapsible */
+.question-block{background:var(--bg-card-alt);border:1px solid var(--border-strong);border-left:3px solid transparent;border-radius:var(--radius);margin-bottom:8px;overflow:hidden}
+.question-block.q-active{border-left-color:var(--accent-cyan)}
+/* Thicker than q-active's 3px so "everyone's answered" reads at a glance, not just on close look. */
+.question-block.q-done{border-left-width:6px;border-left-color:var(--accent-green);opacity:.82}
+/* Beer Round wins over q-done green. Uses --beer-border on --beer-bg (not --accent-gold on the
+   normal --bg-card-alt): the raw accent only clears 3:1 against a background this warm/dark —
+   see the --beer-bg definitions above for why. Also thicker, like q-done, so it's obvious at a glance. */
+.question-block.beer-round{background:var(--beer-bg)!important;border-left-width:6px!important;border-left-color:var(--beer-border)!important;opacity:1!important}
+
+/* Differentiate the Q1/Q2/Q5-Bonus header from the team-answer rows in the body below, which
+   otherwise share the question-block's own --bg-card-alt and blend together. */
+.q-header{display:flex;align-items:center;gap:6px;padding:8px 10px;user-select:none;transition:var(--transition);background:var(--bg-input)}
+.q-header-left{display:flex;align-items:center;gap:6px;cursor:pointer;flex:1;min-width:0}
+.q-header-left:hover{opacity:.8}
+.question-title{font-family:var(--font-display);font-size:.82rem;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px}
+.q-chevron{font-size:.85rem;color:var(--text-muted);transition:transform .25s;flex-shrink:0}
+.q-header-right{display:flex;align-items:center;gap:4px;flex-shrink:0;margin-left:auto}
+.question-block.q-collapsed .q-body{display:none}
+.question-block.q-collapsed .q-chevron{transform:rotate(-90deg)}
+.question-block.q-collapsed .q-header-right{display:none}
+.question-block.bq-collapsed .q-body{display:none}
+.question-block.bq-collapsed .q-chevron{transform:rotate(-90deg)}
+.question-block.bq-collapsed .q-header-right{display:none}
+
+/* Sort/Reset are always-on colored actions rather than neutral buttons, so their purpose reads
+   at a glance on a phone-width row instead of relying on the (now single-word) label alone.
+   Both color pairs are the same accent-solid/on-accent tokens used everywhere else in the app
+   for solid-fill buttons (e.g. .btn-accent, .mark-all-btn.active before this) — those are
+   already verified >=4.5:1 in every theme × color-vision combination, so reusing them here
+   keeps this AA-compliant for free instead of introducing new colors to re-verify. */
+.q-sort-btn,.q-reset-btn{font-family:var(--font-body);font-size:.72rem;font-weight:700;padding:6px 11px;border-radius:6px;cursor:pointer;border:1px solid transparent;transition:var(--transition);text-transform:none;letter-spacing:0;line-height:1.2;white-space:nowrap;touch-action:manipulation}
+.q-sort-btn{background:var(--accent-cyan-solid);color:var(--on-accent-cyan);border-color:var(--accent-cyan-solid)}
+.q-sort-btn:hover{filter:brightness(1.1)}
+.q-sort-btn.active{box-shadow:0 0 0 2px var(--on-accent-cyan) inset}
+.q-reset-btn{background:var(--danger-solid-bg);color:#fff;border-color:var(--danger-solid-bg)}
+.q-reset-btn:hover{filter:brightness(1.15)}
+.q-badge{font-family:var(--font-body);font-size:1rem;line-height:1;font-weight:700;padding:1px 9px;border-radius:4px;border:1px solid currentColor}
+.q-badge.q-remaining{background:rgba(255,238,0,.13);color:var(--badge-gold-fg)}
+.q-badge.q-complete{background:rgba(68,255,68,.1);color:var(--badge-green-fg)}
+/* Beer Round badge is always golden yellow — it previously reused .q-complete's green,
+   which read as a pass/fail color rather than the "everyone nailed it" celebration it is. */
+.q-badge.q-beer{background:rgba(255,238,0,.13);color:var(--badge-gold-fg)}
+
+/* BEER ROUND banner */
+.beer-banner{display:flex;align-items:center;gap:8px;padding:6px 10px 8px;background:rgba(255,238,0,.07);border-bottom:1px solid rgba(255,238,0,.2);animation:beerPop .5s ease-out}
+@keyframes beerPop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.beer-banner-icon{font-size:1.3rem;animation:beerWobble 1.2s ease-in-out infinite alternate}
+@keyframes beerWobble{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
+.beer-banner-text{font-family:var(--font-display);font-size:.78rem;font-weight:700;color:var(--badge-gold-fg);text-transform:uppercase;letter-spacing:1.5px}
+.beer-banner-sub{font-size:.68rem;color:var(--text-muted);font-weight:400;text-transform:none;letter-spacing:0;display:block;margin-top:1px}
+
+.q-body{padding:0 10px 8px}
+
+/* PER-QUESTION CORRECT/INCORRECT STATS — lives inline in .q-header-right next to Sort/Reset.
+   display:contents on the wrapper makes it invisible to flex layout so the two pills become
+   direct flex items of .q-header-right instead of adding an extra nesting level. Reuses the
+   same fg/bg/border token pairs as .ta-pts .pts-pos/.pts-neg (already contrast-checked per
+   theme and per colorblind mode) so this reads as the same "correct vs incorrect" language
+   used everywhere else in the app. */
+.q-stats-row{display:contents}
+.q-stat{font-family:var(--font-body);font-size:.72rem;font-weight:700;padding:5px 8px;border-radius:6px;line-height:1.2;white-space:nowrap}
+.q-stat-correct{color:var(--pts-pos-fg);background:var(--pts-pos-bg);border:1px solid var(--pts-pos-border)}
+.q-stat-incorrect{color:var(--pts-neg-fg);background:var(--pts-neg-bg);border:1px solid var(--pts-neg-border)}
+
+/* TEAM ANSWER ROWS */
+.team-answer{display:flex;align-items:center;gap:.35rem;padding:var(--row-pad) 10px;border-bottom:1px solid var(--border);flex-wrap:nowrap;margin-left:-10px;margin-right:-10px;min-height:3.2rem}
+.team-answer:last-child{border-bottom:none}
+.team-answer:nth-child(even){background:var(--row-stripe)}
+
+.ta-name{font-weight:600;font-size:.88rem;flex-shrink:0;width:11rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word;padding-left:4px;padding-right:8px;line-height:1.3}
+
+.team-answer.flash{animation:row-flash .85s ease-out}
+@keyframes row-flash{0%{background:rgba(0,255,255,.22)}100%{background:transparent}}
+.team-answer:nth-child(even).flash{animation:row-flash-stripe .85s ease-out}
+@keyframes row-flash-stripe{0%{background:rgba(0,255,255,.22)}100%{background:var(--row-stripe)}}
+
+/* BEER ROUND row gold flash */
+.team-answer.beer-flash{animation:beer-row-flash 1.1s ease-out}
+@keyframes beer-row-flash{0%{background:rgba(255,238,0,.35)}60%{background:rgba(255,238,0,.12)}100%{background:transparent}}
+.team-answer:nth-child(even).beer-flash{animation:beer-row-flash-stripe 1.1s ease-out}
+@keyframes beer-row-flash-stripe{0%{background:rgba(255,238,0,.35)}60%{background:rgba(255,238,0,.12)}100%{background:var(--row-stripe)}}
+
+/* WAGER BUTTONS */
+.ta-wagers{display:flex;gap:.2rem;flex-shrink:0;margin-left:auto}
+.wager-btn{min-width:2.6rem;min-height:2.6rem;border:1px solid var(--border-light);border-radius:6px;background:var(--btn-idle-bg);color:var(--text-primary);font-family:var(--font-display);font-size:1.1rem;font-weight:700;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;touch-action:manipulation}
+.wager-btn:hover:not(.used):not(.correct):not(.incorrect){background:var(--bg-hover);border-color:var(--accent-cyan)}
+.wager-btn.correct{background:var(--btn-correct-bg);border:2px solid var(--accent-green)}
+.wager-btn.incorrect{background:var(--btn-incorrect-bg);border:2px solid var(--accent-red)}
+.wager-btn.used{background:var(--btn-used-bg);opacity:.22;cursor:not-allowed;text-decoration:line-through}
+
+.wager-badge{position:absolute;top:-8px;right:-5px;width:1.3rem;height:1.3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.15rem;font-weight:900;line-height:1;padding-bottom:1px;pointer-events:none}
+.wager-badge.bg-correct{background:transparent;color:#fff}
+.wager-badge.bg-incorrect{background:var(--danger-solid-bg);color:#fff;font-size:1.05rem;font-weight:900}
+
+/* SCORE PILL */
+.ta-pts{font-family:var(--font-display);font-size:1.18rem;font-weight:800;min-width:3.4rem;text-align:center;flex-shrink:0;padding:6px 10px;border-radius:8px;line-height:1.05;letter-spacing:.3px}
+.pts-pos{color:var(--pts-pos-fg);background:var(--pts-pos-bg);border:1px solid var(--pts-pos-border)}
+.pts-neg{color:var(--pts-neg-fg);background:var(--pts-neg-bg);border:1px solid var(--pts-neg-border)}
+.pts-nil{color:var(--pts-neg-fg);background:var(--pts-neg-bg);border:1px solid var(--pts-neg-border)}
+.pts-zero{color:var(--text-muted);min-width:3.4rem;text-align:center;font-weight:700;opacity:.7}
+
+/* RESULT BUTTONS */
+.ta-result{display:flex;gap:.2rem;flex-shrink:0}
+.result-btn{min-width:2.6rem;min-height:2.6rem;border:1px solid var(--border);border-radius:6px;background:var(--btn-idle-bg);font-size:1.1rem;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;touch-action:manipulation;color:var(--text-secondary)}
+.result-btn:hover:not(.correct-sel):not(.incorrect-sel){background:var(--bg-hover)}
+/* Same fill tokens as .wager-btn.correct/.incorrect (not a neutral --bg-card) so a selected
+   ✓/✕ reads consistently with the colored wager buttons elsewhere in the same round instead of
+   looking like a different, more muted control. */
+.result-btn.correct-sel{background:var(--btn-correct-bg);border:2px solid var(--accent-green);color:var(--badge-green-fg)}
+.result-btn.incorrect-sel{background:var(--btn-incorrect-bg);border:2px solid var(--accent-red);color:var(--txt-red)}
+
+/* STANDINGS — deliberately mirrors .final-table's look (full-width, left-aligned name,
+   right-aligned score, real <thead>) rather than a narrow centered block: same idea, same
+   visual language, minus the Place column. */
+.standings-block{background:var(--bg-card-alt);border:1px solid var(--border);border-radius:var(--radius);padding:10px;margin-bottom:8px}
+/* Whole row (chevron + title) is the collapse toggle, like a question header's q-header-left. */
+.standings-title-row{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.standings-block .standings-title{font-family:var(--font-display);font-size:.88rem;font-weight:600;color:var(--badge-gold-fg);text-transform:uppercase;letter-spacing:.5px}
+.standings-chevron{transition:transform .25s;flex-shrink:0}
+/* Desktop: drop the chevron icon entirely — the whole title row is still the click target
+   (title-row's own role="button"/onclick are untouched), so collapsing still works with just
+   the row itself as the affordance instead of needing the icon too. */
+@media(min-width:901px){
+  .standings-chevron{display:none}
+}
+.standings-block.collapsed .standings-collapsible{display:none}
+.standings-block.collapsed .standings-chevron{transform:rotate(-90deg)}
+/* Banter, sort buttons, and the table are all inside this wrapper so they collapse together. */
+.standings-collapsible{margin-top:8px}
+.standings-sort-btns{display:flex;gap:4px;align-items:center;margin-bottom:6px}
+.standings-sort-btn{font-family:var(--font-display);font-size:.65rem;font-weight:700;padding:3px 8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-input);color:var(--text-secondary);cursor:pointer;transition:var(--transition);text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;touch-action:manipulation}
+.standings-sort-btn:hover{background:var(--bg-hover);color:var(--text-primary)}
+.standings-sort-btn.active{background:var(--badge-gold-fg);color:var(--on-badge);border-color:var(--badge-gold-fg)}
+.standings-table{width:100%;border-collapse:collapse;font-size:.86rem}
+.standings-table th,.standings-table td{padding:7px 8px;border-bottom:1px solid var(--border)}
+.standings-table thead th{color:var(--text-muted);font-weight:600;font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;text-align:left}
+.standings-table thead th:last-child{text-align:right}
+.standings-table tbody tr:last-child td{border-bottom:none}
+.standings-row{cursor:pointer;transition:var(--transition)}
+.standings-row:nth-child(even){background:var(--row-stripe)}
+.standings-name{text-align:left;font-weight:600}
+.standings-pts{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--txt-cyan);text-align:right}
+
+/* BEER STRIPE — for Q5 bonus and special wager beer rounds */
+.beer-stripe{display:flex;align-items:center;gap:6px;padding:5px 12px 6px;background:rgba(255,238,0,.07);border-bottom:1px solid rgba(255,238,0,.18)}
+.beer-stripe-icon{font-size:1.05rem}
+.beer-stripe-text{font-family:var(--font-display);font-size:.75rem;font-weight:700;color:var(--badge-gold-fg);text-transform:uppercase;letter-spacing:1.2px}
+.special-section.beer-round{background:var(--beer-bg)!important;border-color:var(--beer-border)!important}
+.special-section.beer-round h3{color:var(--badge-gold-fg)!important}
+
+/* SPECIAL WAGER SECTIONS */
+.special-section{background:var(--bg-card-alt);border:2px solid var(--accent-magenta);border-radius:var(--radius-lg);padding:12px;margin-bottom:8px}
+.special-section h3{font-family:var(--font-display);font-size:.88rem;color:var(--txt-magenta);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.special-section.final-wager{border-color:var(--accent-orange)}
+.special-section.final-wager h3{color:var(--txt-orange)}
+.special-wager-row{display:flex;align-items:center;gap:.5rem;padding:var(--row-pad) 12px;border-bottom:1px solid var(--border);margin-left:-12px;margin-right:-12px;min-height:3.2rem}
+.special-wager-row:last-child{border-bottom:none}
+.special-wager-row:nth-child(even){background:var(--row-stripe)}
+
+/* BONUS Q5 ROWS */
+.bonus-row{display:flex;align-items:center;gap:.5rem;padding:var(--row-pad) 10px;border-bottom:1px solid var(--border);margin-left:-10px;margin-right:-10px;min-height:3.2rem}
+.bonus-row:last-child{border-bottom:none}
+.bonus-row:nth-child(even){background:var(--row-stripe)}
+.bonus-right{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
+.stepper{display:flex;align-items:center;flex-shrink:0}
+.stepper button{width:1.9rem;height:1.9rem;border:1px solid var(--border-light);background:var(--bg-card);color:var(--text-secondary);font-size:1.1rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:var(--transition)}
+.stepper button:first-child{border-radius:6px 0 0 6px}
+.stepper button:last-child{border-radius:0 6px 6px 0}
+.stepper button:hover{background:var(--bg-hover);color:var(--text-primary)}
+.stepper-val{width:2.2rem;height:1.9rem;display:flex;align-items:center;justify-content:center;background:var(--bg-card);border-top:1px solid var(--border-light);border-bottom:1px solid var(--border-light);font-family:var(--font-display);font-weight:700;font-size:1rem}
+.sw-val{width:2.8rem;height:1.9rem;display:flex;align-items:center;justify-content:center;background:var(--bg-card);border-top:1px solid var(--border-light);border-bottom:1px solid var(--border-light);font-family:var(--font-display);font-weight:700;font-size:1rem;color:var(--text-primary)}
+.sw-val.unset{color:var(--text-muted);font-size:.85rem}
+.bonus-pts{font-family:var(--font-display);font-size:1.18rem;font-weight:800;min-width:3.4rem;text-align:center;flex-shrink:0;padding:6px 10px;border-radius:8px;line-height:1.05;letter-spacing:.3px}
+.bonus-pts.pts-pos{color:var(--pts-pos-fg);background:var(--pts-pos-bg);border:1px solid var(--pts-pos-border)}
+.bonus-pts.pts-nil{color:var(--pts-neg-fg);background:var(--pts-neg-bg);border:1px solid var(--pts-neg-border)}
+.bonus-pts.pts-zero{color:var(--text-muted);min-width:3.4rem;text-align:center;font-weight:700;opacity:.7}
+
+/* EXPORT */
+.export-bar{display:flex;gap:8px;flex-wrap:wrap;padding:10px 0}
+.export-prompt{display:none;background:var(--bg-card-alt);border:1px solid var(--accent-gold);border-radius:var(--radius);padding:10px;margin-top:8px}
+.export-prompt.show{display:block}
+.export-prompt p{margin-bottom:6px;color:var(--badge-gold-fg);font-weight:600;font-size:.85rem}
+#fileLoadInput{display:none}
+
+
+
+/* CLICKABLE TEAM NAME (opens audit) */
+.ta-name-clickable{cursor:pointer}
+.ta-name-clickable:hover{color:var(--txt-cyan);text-decoration:underline}
+/* \FE0F (VS16) forces full-color emoji presentation — without it some platforms fall
+   back to a plain monochrome glyph, which can end up low-contrast against a theme's
+   background instead of the intended colorful magnifying glass. */
+.ta-name-clickable::after{content:'\1F50D\FE0F';font-size:1.25em;opacity:0;margin-left:4px;transition:opacity .15s}
+.ta-name-clickable:hover::after{opacity:1}
+
+/* FULLY CLICKABLE ROWS (standings + final results) — the whole row is the audit target, not
+   just the name text, so the hover cue (border highlight + background tint) and the
+   magnifying glass both need to react to hovering anywhere in the row, not only the name. */
+.standings-row,.final-table tbody tr{cursor:pointer;transition:var(--transition)}
+/* Outline instead of a background swap: the row's fill stays put on hover, and the outline
+   color (--accent-cyan-solid) is >=4.3:1 against every theme/color-vision surface it sits on
+   here, unlike the old inset box-shadow (--border-light was only ~1.8–2.7:1). */
+.standings-row:hover,.final-table tbody tr:hover{outline:2px solid var(--accent-cyan-solid);outline-offset:-2px}
+.standings-row:hover .ta-name-clickable,.final-table tbody tr:hover .ta-name-clickable{color:var(--txt-cyan);text-decoration:underline}
+.standings-row:hover .ta-name-clickable::after,.final-table tbody tr:hover .ta-name-clickable::after{opacity:1}
+
+/* MANUAL ENTRY for special wagers (stepper + type) */
+.stepper input.sw-input{width:2.8rem;height:1.9rem;text-align:center;background:var(--bg-card);border:none;border-top:1px solid var(--border-light);border-bottom:1px solid var(--border-light);border-radius:0;color:var(--text-primary);font-family:var(--font-display);font-weight:700;font-size:1rem;padding:0;outline:none;box-shadow:none;-moz-appearance:textfield;appearance:textfield}
+.stepper input.sw-input::-webkit-outer-spin-button,.stepper input.sw-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.stepper input.sw-input::placeholder{color:var(--text-muted);font-weight:400}
+.stepper input.sw-input:focus{background:var(--bg-hover);box-shadow:none}
+
+/* BONUS submitted / zero-correct state (R1 & R3) */
+.stepper-val.unset{color:var(--text-muted);font-size:.85rem}
+.bonus-pts.submitted-zero{color:var(--pts-neg-fg);background:var(--pts-neg-bg);border:1px solid var(--pts-neg-border);font-size:1.05rem;font-weight:800}
+.bonus-zero{font-family:var(--font-display);font-size:.72rem;font-weight:700;padding:0 8px;height:1.9rem;border:1px solid var(--accent-green);border-radius:6px;background:rgba(68,255,68,.08);color:var(--badge-green-fg);cursor:pointer;transition:var(--transition);white-space:nowrap;flex-shrink:0;touch-action:manipulation}
+.bonus-zero:hover{background:rgba(68,255,68,.18)}
+.bonus-clear{width:1.9rem;height:1.9rem;border:1px solid var(--border-light);border-radius:6px;background:var(--bg-input);color:var(--text-muted);cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:var(--transition);flex-shrink:0;touch-action:manipulation}
+.bonus-clear:hover{background:rgba(255,68,68,.12);color:var(--txt-red);border-color:var(--accent-red)}
+
+/* BONUS ONE-CLICK CHOICE (R1 & R3) — one tap sets 0-4 correct, tap again to unselect */
+.bonus-choice{display:flex;gap:.18rem;flex-shrink:0}
+.bonus-choice-btn{width:2.2rem;height:2.2rem;border:1px solid var(--border-light);border-radius:6px;background:var(--bg-card);color:var(--text-secondary);font-family:var(--font-display);font-weight:700;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:var(--transition);position:relative}
+.bonus-choice-btn:hover:not(.correct):not(.incorrect){background:var(--bg-hover);color:var(--text-primary)}
+.bonus-choice-btn.correct{background:var(--btn-correct-bg);border:2px solid var(--accent-green);color:var(--text-primary)}
+.bonus-choice-btn.incorrect{background:var(--btn-incorrect-bg);border:2px solid var(--accent-red);color:var(--text-primary)}
+
+.question-title.bonus-title{flex-direction:column;align-items:flex-start;gap:4px}
+.bonus-title-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+/* Round 1/3 bonus title colors — reuses the same tokens the rl-1/rl-3 round badges already
+   use elsewhere, verified >=8:1 contrast against --bg-card-alt in every theme x color-vision
+   mode combination (dark, light, and both colorblind simulations). */
+.bq-r1{color:var(--txt-cyan)}
+.bq-r3{color:var(--badge-gold-fg)}
+/* q-badge-lg used to bump the bonus-question badge above the base .q-badge size; now that
+   every "Done"/status badge already uses the larger 1rem base size, only the padding bump
+   is still meaningful — kept so existing markup referencing the class still resolves. */
+.q-badge.q-badge-lg{padding:3px 10px}
+
+/* SPECIAL WAGER collapse (R2 Bonus Wager / R4 Final Wager) — the collapse toggle and the
+   Sort/Reset buttons are separate flex children (sw-header-left/q-header-right) so tapping
+   a button doesn't also collapse the section. */
+.sw-header{display:flex;align-items:center;gap:8px;user-select:none}
+.sw-header-left{display:flex;align-items:center;gap:8px;cursor:pointer;flex:1;min-width:0}
+.sw-header h3{margin-bottom:0!important}
+/* "Q5" + its Done/Beer/remaining badge stay on their own top line, with the "BONUS WAGER
+   (1-10/1-20)" range label always on a second line beneath — a fixed two-line layout at
+   every width, rather than shrinking the font to force it onto one line (that made the text
+   too small to read on a phone). Both lines inherit the h3's own font-size/color/weight, so
+   neither line reads any smaller than the section title always has. */
+.sw-title{display:flex;flex-direction:column;gap:2px;min-width:0}
+.sw-title-row{display:flex;align-items:center;gap:8px}
+.sw-header-left:hover{opacity:.85}
+.sw-header .q-chevron{transition:transform .25s}
+.special-section.sw-collapsed .q-chevron{transform:rotate(-90deg)}
+.special-section.sw-collapsed .sw-body{display:none}
+.special-section.sw-collapsed .q-header-right{display:none}
+.special-section .sw-body{margin-top:8px}
+
+/* Beer round — full gold border so it reads at a glance (no size change) */
+.question-block.beer-round{border-color:var(--beer-border)!important}
+
+/* Craft Prize Drawing — same --beer-bg/--beer-border tokens as a Beer Round question block,
+   applied to the whole section (not just the winner announcement) so the section itself
+   reads as beer-branded at a glance. .section-header keeps its own opaque --bg-card-alt
+   fill (same as a Beer Round question's own header), so only the body area picks up the
+   golden tint underneath it. */
+#sec-craftprize{background:var(--beer-bg);border-color:var(--beer-border)}
+
+/* CRAFT BEER PRIZE winner — tap a name in the scoreboard to toggle */
+.sr-name-clickable{cursor:pointer}
+.sr-name-clickable:hover{color:var(--badge-gold-fg)}
+.score-row.cb-prize{border:1px solid var(--badge-gold-fg);border-radius:8px;background:rgba(255,238,0,.08);margin-left:0;margin-right:0}
+.cb-tag{font-family:var(--font-body);font-size:.58rem;font-weight:700;color:var(--badge-gold-fg);background:rgba(255,238,0,.14);border:1px solid var(--badge-gold-fg);border-radius:4px;padding:1px 5px;margin-left:5px;white-space:nowrap;text-transform:uppercase;letter-spacing:.5px;vertical-align:middle}
+/* .cb-tag can sit on a team row that is ALSO gold-tinted (.score-row.cb-prize), compounding
+   the tint darker than badge-gold-fg was tuned for — bump brightness for that one case. */
+[data-theme="hc-dark"][data-cb="2"] .score-row.cb-prize .cb-tag{color:#ffb3ff}
+
+/* CRAFT PRIZE RANDOMIZER */
+.cp-config{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-bottom:8px}
+.cp-field{display:flex;flex-direction:column;align-items:center;gap:5px}
+.cp-field-label{font-size:.68rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px;text-align:center}
+.cp-field .stepper input.sw-input{width:3.2rem}
+.cp-status{font-size:.72rem;color:var(--text-muted);margin-bottom:2px}
+.cp-note{font-size:.66rem;color:var(--text-muted);opacity:.75;margin-bottom:8px;font-style:italic}
+.cp-draw-btn{width:100%}
+.cp-draw-btn:disabled{opacity:.5;cursor:not-allowed}
+.cp-intro{font-size:.78rem;color:var(--text-secondary);margin-bottom:6px;font-style:italic}
+.cp-flash{font-family:var(--font-display);font-size:1.3rem;font-weight:800;text-align:center;padding:14px 8px;color:var(--badge-gold-fg);background:rgba(255,238,0,.08);border:2px dashed var(--accent-gold);border-radius:var(--radius);animation:cpPulse .22s ease-in-out infinite alternate}
+@keyframes cpPulse{from{opacity:.75;transform:scale(.99)}to{opacity:1;transform:scale(1.01)}}
+/* Drumroll countdown — lets the host glance at exactly how far into the drumroll they are
+   while manually raising the volume and talking over it, rather than guessing. */
+.cp-countdown{display:flex;align-items:center;gap:10px;margin-top:8px}
+.cp-countdown-track{flex:1;height:10px;border-radius:6px;background:var(--bg-input);border:1px solid var(--border);overflow:hidden}
+.cp-countdown-fill{height:100%;background:var(--accent-cyan-solid);transition:width .1s linear}
+.cp-countdown-num{font-family:var(--font-display);font-size:1.15rem;font-weight:800;color:var(--txt-cyan);min-width:2.8rem;text-align:right;font-variant-numeric:tabular-nums}
+/* Trophy+name+"won!" are one flowing text span (not separate flex items) so a long team name
+   wraps onto a second line on its own, with "won!" following right after it — the Clear
+   button is the only other flex item, so it stays put on the first line instead of also
+   wrapping to its own row. */
+.cp-winner{font-size:.9rem;margin:8px 0 6px;color:var(--text-primary);display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+/* flex:0 1 auto (not flex:1): the text takes only its own natural width so the Clear button
+   sits right next to "won!" instead of being pushed out to the far right edge of the card at
+   every viewport width. flex-wrap on .cp-winner above still lets the button drop to its own
+   line if a long team name eats the whole row's width, so it never ends up stranded. */
+.cp-winner-text{flex:0 1 auto;min-width:0}
+.cp-clear-btn{font-size:.9rem;line-height:1;padding:5px 9px;border-radius:var(--radius);flex-shrink:0}
+/* "Clear" label text is desktop-only (icon-only "✕" on mobile keeps the button compact there);
+   the closer positioning above, though, applies everywhere. */
+.cp-clear-label{display:none}
+@media(min-width:901px){
+  .cp-clear-label{display:inline}
+}
+.cp-script-label{display:block;font-size:.66rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.cp-script{width:100%;min-height:5.5rem;padding:8px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-body);font-size:.85rem;line-height:1.4;resize:vertical}
+
+/* SCORE AUDIT MODAL */
+.audit-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.72);align-items:flex-start;justify-content:center;padding:20px 10px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.audit-overlay.show{display:flex}
+.audit-modal{background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);width:100%;max-width:680px;box-shadow:var(--shadow);margin:auto;animation:auditPop .18s ease-out}
+@keyframes auditPop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.audit-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg-card);border-radius:var(--radius-lg) var(--radius-lg) 0 0;z-index:2}
+.audit-head h2{font-family:var(--font-display);font-size:1.05rem;color:var(--txt-cyan);text-transform:uppercase;letter-spacing:1px;line-height:1.2;word-break:break-word}
+.audit-head .aud-sub{display:block;font-family:var(--font-body);font-size:.7rem;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:400;margin-top:3px}
+.audit-close{font-family:var(--font-body);font-size:.85rem;border:1px solid var(--border);background:var(--bg-input);color:var(--text-primary);border-radius:var(--radius);padding:7px 12px;cursor:pointer;font-weight:700;flex-shrink:0;white-space:nowrap}
+.audit-close:hover{background:var(--bg-hover);border-color:var(--border-light)}
+.audit-body{padding:12px 14px 18px}
+.aud-round{margin-bottom:12px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.aud-round-h{display:flex;align-items:center;gap:8px;padding:7px 12px;background:var(--bg-card-alt);font-family:var(--font-display);font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.aud-line{display:flex;align-items:center;gap:8px;padding:6px 12px;border-top:1px solid var(--border);font-size:.85rem}
+.aud-line:nth-child(even){background:var(--row-stripe)}
+.aud-q{font-family:var(--font-display);font-weight:700;width:2.3rem;flex-shrink:0;color:var(--text-secondary)}
+.aud-wager{color:var(--text-secondary);font-size:.78rem;width:5.2rem;flex-shrink:0}
+.aud-res{flex:1;font-size:.8rem;font-weight:600;min-width:0}
+.aud-res.aud-correct{color:var(--badge-green-fg)}
+.aud-res.aud-wrong{color:var(--txt-red)}
+.aud-res.aud-none,.aud-res.aud-pending{color:var(--text-muted);font-weight:400;font-style:italic}
+.aud-p{font-family:var(--font-display);font-weight:700;min-width:2.8rem;text-align:right;flex-shrink:0}
+.aud-p.pos{color:var(--badge-green-fg)}
+.aud-p.neg{color:var(--txt-red)}
+.aud-p.zero,.aud-p.none{color:var(--text-muted)}
+.aud-subline{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 12px;border-top:1px solid var(--border-light);background:var(--bg-input);font-size:.78rem;font-weight:700}
+.aud-subline .lbl{color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px}
+.aud-subline .run{font-family:var(--font-display);color:var(--txt-cyan);font-size:.95rem}
+.aud-subline .sub{font-family:var(--font-display);color:var(--text-primary)}
+.aud-total{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:rgba(0,255,255,.08);border:1px solid var(--accent-cyan);border-radius:var(--radius);font-family:var(--font-display);font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.aud-total .val{font-size:1.5rem;color:var(--txt-cyan)}
+.aud-note{font-size:.72rem;color:var(--text-muted);margin-top:10px;line-height:1.4}
+
+/* ── Scoring rows reflow based on the CONTENT COLUMN's own width, not the
+      viewport. This catches narrow desktop windows (≈500px) where the sidebar
+      sits at the bottom but the column is still too tight for one-line rows. ── */
+@container scorecol (max-width:600px){
+  /* team name on its own line, controls right-aligned on the line below */
+  .team-answer,.bonus-row,.special-wager-row{flex-wrap:wrap;row-gap:.35rem;min-height:0}
+  .ta-name{flex:0 0 100%;width:100%;min-width:0;overflow-wrap:break-word;font-size:.82rem;padding-left:2px;padding-right:0;line-height:1.3}
+  .ta-name-clickable::after{display:none}
+  /* push the control cluster to the right edge of its own line */
+  .team-answer>.ta-wagers,.bonus-row>.bonus-right,.special-wager-row>.stepper{margin-left:auto}
+
+  /* wager / result buttons: clamp so they can't balloon past the column */
+  .wager-btn{min-width:clamp(2rem,9cqw,2.6rem);min-height:clamp(2rem,9cqw,2.6rem);width:clamp(2rem,9cqw,2.6rem);height:clamp(2rem,9cqw,2.6rem);font-size:1rem}
+  .result-btn{min-width:clamp(2rem,9cqw,2.6rem);min-height:clamp(2rem,9cqw,2.6rem);width:clamp(2rem,9cqw,2.6rem);height:clamp(2rem,9cqw,2.6rem);font-size:1rem}
+  .bonus-choice-btn{width:clamp(1.7rem,7.5cqw,2.2rem);height:clamp(1.7rem,7.5cqw,2.2rem);font-size:.92rem}
+
+  /* score pill */
+  .ta-pts,.bonus-pts{min-width:clamp(2.6rem,13cqw,3.4rem);font-size:1rem;padding:4px 6px}
+
+  /* bonus steppers (sw-val / sw-input) */
+  .sw-val{width:clamp(2rem,9cqw,2.6rem);min-width:0}
+  .stepper input.sw-input{width:clamp(2rem,9cqw,2.6rem);min-width:0}
+  .stepper button{width:clamp(1.6rem,7cqw,1.9rem);height:clamp(1.6rem,7cqw,1.9rem)}
+  .stepper-val{width:clamp(1.8rem,8cqw,2.2rem);min-width:0}
+
+  /* team-setup grid */
+  .meta-grid{grid-template-columns:1fr}
+  .team-entry{grid-template-columns:1fr 4.3rem auto;gap:5px}
+  .team-entry.has-adj{grid-template-columns:1fr 4.3rem auto auto}
+  .check-label{font-size:.72rem;padding:5px 8px;gap:5px}
+  .check-box{width:20px;height:20px}
+
+  /* Q1-4 / Q5 Bonus / Q5 Wager headers: title + badge + two Sort/Reset buttons don't fit on
+     one line at phone widths — the desktop-sized 1rem "Done"/"Beer Round!" badge alone was
+     squeezing the title down to a handful of px. Wrap the button cluster onto its own row
+     so it gets the full row width instead of fighting the title for space. The button cluster
+     wrapping to its own row already frees up enough width that nothing here needs to shrink
+     below the badge's own size — one shared .8rem (not three separate step-downs) keeps the
+     badge and the Sort/Reset buttons reading as one control cluster at every FONT_SIZES step,
+     down to the 12px floor. */
+  .q-header,.sw-header{flex-wrap:wrap}
+  .q-header-right{flex-basis:100%;flex-wrap:wrap;row-gap:4px;justify-content:flex-end;margin-left:0;margin-top:2px}
+  .q-badge,.round-badge{font-size:.8rem}
+  /* Sort/Reset drop their text label and shrink to icon-only squares here so the correct/
+     incorrect stat pills (which carry the count+% the host actually needs) always have room
+     to sit on the same row instead of wrapping to a line of their own. The aria-label/title
+     already on each button keep them accessible with the label hidden. */
+  .btn-label{display:none}
+  /* Icon is the button's whole visible content now that its label is hidden, so it gets its
+     own larger font-size (not the .78rem sized for the old icon+text pairing) to actually
+     read at a glance instead of looking lost in the middle of a same-sized tap target. */
+  .q-sort-btn,.q-reset-btn{font-size:1.35rem;line-height:1;padding:0;width:clamp(2.2rem,9cqw,2.6rem);height:clamp(2.2rem,9cqw,2.6rem);display:inline-flex;align-items:center;justify-content:center}
+  .q-stat{font-size:.74rem;padding:5px 7px}
+}
+
+@media(max-width:480px){
+  /* ── standings rows (sidebar) ── */
+  .standings-name{min-width:0}
+  .standings-pts{min-width:clamp(2rem,9vw,2.5rem)}
+
+  /* ── score audit modal rows (body-level overlay) ── */
+  .aud-wager{width:4.2rem;font-size:.72rem;min-width:0}
+  .aud-res{font-size:.74rem;min-width:0}
+  .aud-q{min-width:0;width:2rem}
+  .aud-p{min-width:clamp(2rem,8vw,2.8rem)}
+
+  /* ── header toolbar ── */
+  .toolbar{min-width:0;gap:4px}
+  .toolbar>button,.btn{min-width:0}
+  .logo{font-size:1.1rem;letter-spacing:1px}
+
+  /* ── sort buttons (sidebar) ── */
+  .sort-btn{font-size:.74rem;padding:7px 2px}
+}
+
+/* Final results table */
+.final-table{width:100%;border-collapse:collapse;font-size:.86rem;margin-top:4px}
+.final-table th,.final-table td{padding:7px 8px;border-bottom:1px solid var(--border);text-align:center}
+.final-table thead th{color:var(--text-muted);font-weight:600;font-size:.7rem;text-transform:uppercase;letter-spacing:.04em}
+.final-table td.fr-name{text-align:left;color:var(--text-primary)}
+.final-table td.fr-place{color:var(--text-secondary);font-weight:700;white-space:nowrap}
+.final-table td.fr-score{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--txt-cyan)}
+/* Guess/Diff sit close together (tight inner padding) with a vertical rule between them,
+   rather than being spread out to match the other columns' full padding. */
+.final-table th.fr-guess-h,.final-table td.fr-guess{padding-right:4px}
+.final-table th.fr-diff-h,.final-table td.fr-diff{padding-left:4px;border-left:1px solid var(--border)}
+/* Monospace: every digit is the same width, so the Guess/Diff numbers (and the mobile G/D
+   labels next to them) line up consistently instead of drifting with proportional-font kerning. */
+.final-table td.fr-guess{color:var(--text-secondary);font-weight:600;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.final-table td.fr-diff{color:var(--text-secondary);font-weight:600;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.final-table tbody tr:last-child td{border-bottom:none}
+.final-table tbody tr:nth-child(even):not(.fr-tie):not(.fr-gold):not(.fr-silver):not(.fr-bronze){background:var(--row-stripe)}
+.final-table tr.fr-tie{background:rgba(255,221,0,.13)}
+.final-table tr.fr-tie td{border-bottom-color:var(--accent-gold)}
+.fr-tiebadge{display:inline-block;font-size:.62rem;padding:1px 7px;border-radius:999px;background:var(--badge-gold-fg);color:var(--on-badge);margin-left:6px;vertical-align:middle;font-weight:700}
+.fr-tiebadge.fr-win{background:var(--badge-green-fg)}
+.fr-diff-win{color:var(--badge-green-fg)!important;font-weight:800!important}
+.fr-note{font-size:.72rem;color:var(--text-muted);margin-top:9px;line-height:1.45}
+/* Collapsed by default so the tie-break/Diff explanation doesn't eat vertical space every time
+   Final Results is open — <details>/<summary> gets keyboard support and toggling for free. */
+.fr-details{margin-top:9px}
+.fr-details summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;font-size:.72rem;font-weight:700;color:var(--text-muted);padding:4px 8px;border:1px solid var(--border);border-radius:var(--radius);transition:var(--transition)}
+.fr-details summary::-webkit-details-marker{display:none}
+.fr-details summary:hover{background:var(--bg-hover);color:var(--text-primary)}
+.fr-details[open] summary{margin-bottom:6px}
+.fr-details .fr-note:first-of-type{margin-top:0}
+
+/* ── Final results podium medals (1st/2nd/3rd) ──
+   The 4px accent bar is baked into the row background gradient so it renders
+   identically whether the row is a table-row (desktop) or a grid card (mobile). */
+.final-table tr.fr-gold,
+.final-table tr.fr-silver,
+.final-table tr.fr-bronze{position:relative}
+/* default / dark theme (white text) */
+.final-table tr.fr-gold  {background:linear-gradient(90deg,#ffd43b 0 4px,rgba(255,215,0,.22) 4px,rgba(255,215,0,.10) 100%)}
+.final-table tr.fr-silver{background:linear-gradient(90deg,#cdd0dc 0 4px,rgba(200,202,215,.20) 4px,rgba(200,202,215,.09) 100%)}
+.final-table tr.fr-bronze{background:linear-gradient(90deg,#e0904c 0 4px,rgba(210,130,55,.24) 4px,rgba(210,130,55,.11) 100%)}
+.final-table tr.fr-gold   .fr-place{color:#ffe066}
+.final-table tr.fr-silver .fr-place{color:#e3e6f0}
+.final-table tr.fr-bronze .fr-place{color:#f0a868}
+/* explicit high-contrast dark: brighter tints + borders */
+[data-theme="hc-dark"] .final-table tr.fr-gold  {background:linear-gradient(90deg,#ffe000 0 4px,rgba(255,224,0,.28) 4px,rgba(255,224,0,.13) 100%)}
+[data-theme="hc-dark"] .final-table tr.fr-silver{background:linear-gradient(90deg,#dde0ec 0 4px,rgba(215,218,232,.26) 4px,rgba(215,218,232,.12) 100%)}
+[data-theme="hc-dark"] .final-table tr.fr-bronze{background:linear-gradient(90deg,#f0a050 0 4px,rgba(232,140,60,.28) 4px,rgba(232,140,60,.13) 100%)}
+[data-theme="hc-dark"] .final-table tr.fr-gold   .fr-place{color:#ffe840}
+[data-theme="hc-dark"] .final-table tr.fr-silver .fr-place{color:#f0f2fa}
+[data-theme="hc-dark"] .final-table tr.fr-bronze .fr-place{color:#ffb76d}
+/* light theme (dark text): heavier tints so the medal reads, text stays legible */
+[data-theme="hc-light"] .final-table tr.fr-gold  {background:linear-gradient(90deg,#c8900a 0 4px,rgba(255,205,0,.42) 4px,rgba(255,216,80,.26) 100%)}
+[data-theme="hc-light"] .final-table tr.fr-silver{background:linear-gradient(90deg,#6f6f80 0 4px,rgba(150,150,165,.44) 4px,rgba(178,178,192,.28) 100%)}
+[data-theme="hc-light"] .final-table tr.fr-bronze{background:linear-gradient(90deg,#9c5a20 0 4px,rgba(200,115,40,.40) 4px,rgba(212,134,62,.26) 100%)}
+[data-theme="hc-light"] .final-table tr.fr-gold   .fr-place{color:#664800}
+[data-theme="hc-light"] .final-table tr.fr-silver .fr-place{color:#3d3d4b}
+[data-theme="hc-light"] .final-table tr.fr-bronze .fr-place{color:#5c3010}
+/* keep the score/diff text high-contrast on the medal rows in every theme */
+.final-table tr.fr-gold .fr-score,.final-table tr.fr-silver .fr-score,.final-table tr.fr-bronze .fr-score{color:var(--text-primary)}
+
+/* ── Final results mobile layout: stack overflow cells onto a second row ──
+   Uses the scorecol container query so it follows the score column's real
+   width (full-width on phones, wide on desktop) rather than the viewport.
+   Threshold deliberately much narrower than the 600px used elsewhere in this file (e.g. the
+   team-answer/bonus-row breakpoint above): Score/Guess/Diff stay as normal single-row table
+   columns across ordinary phone widths, only dropping to the stacked 2-row layout once the
+   column genuinely can't fit them anymore. */
+@container scorecol (max-width:340px){
+  /* Headers stay visible, laid out with the same 3-column + wrapped-4th-row grid as the
+     tbody rows below, so "Place/Team/Score" sit over their own stacked columns. Guess/Diff
+     get no header of their own — each value now labels itself inline (see fr-guess/fr-diff
+     ::before below), so a header for them would just repeat what's already on the number. */
+  .final-table thead{display:block}
+  .final-table thead tr{display:grid;grid-template-columns:2.75rem minmax(0,1fr) 3.2rem;column-gap:10px;padding:6px 11px;border-bottom:1px solid var(--border)}
+  .final-table thead th{padding:0;border-bottom:none}
+  .final-table thead th:nth-child(1){grid-column:1;grid-row:1;text-align:left}
+  .final-table thead th:nth-child(2){grid-column:2;grid-row:1;text-align:left}
+  .final-table thead th:nth-child(3){grid-column:3;grid-row:1;text-align:right}
+  .final-table thead th:nth-child(4),.final-table thead th:nth-child(5){display:none}
+  .final-table,.final-table tbody{display:block;width:100%}
+  .final-table tr{
+    display:grid;
+    /* place gets a fixed track (not auto) — each <tr> is its own independent grid, so an
+       "auto" column sizes to that ONE row's own content, and "1st" vs "10th" end up with
+       different column widths and misaligned team names. A fixed width is shared by every
+       row's grid uniformly, so the team-name column always starts at the same x position. */
+    grid-template-columns:2.75rem minmax(0,1fr) 3.2rem;
+    column-gap:10px;row-gap:3px;
+    align-items:center;
+    padding:9px 11px;
+    border-bottom:1px solid var(--border);
+  }
+  .final-table tbody tr:last-child{border-bottom:none}
+  .final-table td{display:block;border-bottom:none;padding:0;text-align:left}
+  /* row 1: place · team · score. Row 2: Guess/Diff as a close-together pair with a divider,
+     each one prefixed with its own mini-label (via ::before) so the number reads on its own
+     without needing to look back up at a header. */
+  .final-table td.fr-place{grid-column:1;grid-row:1;font-size:1rem}
+  .final-table td.fr-name {grid-column:2;grid-row:1;font-size:.95rem;white-space:normal;overflow-wrap:break-word;line-height:1.25}
+  .final-table td.fr-score{grid-column:3;grid-row:1;text-align:right;font-size:1.1rem}
+  /* Negative margin pulls Guess in against the grid's column-gap (which row 1's Team/Score
+     still needs) so the G/D pair reads as one close-together unit instead of two numbers
+     spaced as far apart as Team and Score are. The divider lives on the ::before itself
+     (not the td's own border) so it sits right next to "D", not at the fixed column's left
+     edge — a border on the td would leave a gap that grows or shrinks with the diff value's
+     own digit count, since the td is wider than short values like "+4" need. */
+  .final-table td.fr-guess{grid-column:2/3;grid-row:2;text-align:right;white-space:nowrap;font-size:.78rem;color:var(--text-secondary);padding-right:4px;margin-right:-10px}
+  .final-table td.fr-diff{grid-column:3/4;grid-row:2;text-align:right;white-space:nowrap;font-size:.78rem;color:var(--text-secondary)}
+  .final-table td.fr-guess::before,.final-table td.fr-diff::before{color:var(--text-muted);font-weight:700}
+  .final-table td.fr-guess::before{content:"G "}
+  .final-table td.fr-diff::before{content:"D ";border-left:1px solid var(--border);padding-left:4px;margin-left:2px}
+  /* tie badge: let it wrap under the name instead of pushing width */
+  .final-table td.fr-name .fr-tiebadge{margin-left:0;margin-top:3px}
+}
+
+/* ── HOST BANTER ─────────────────────────────────────────────────
+   Fixed-height text area reserves room for 2-3 lines so refreshing a
+   line never shifts surrounding layout; the refresh button is flex-
+   shrink:0 with a fixed touch-size so it stays put as text changes. */
+.banter{display:flex;align-items:flex-start;gap:8px;background:var(--bg-card-alt);border:1px solid var(--border);border-left:3px solid var(--accent-magenta);border-radius:var(--radius);padding:8px 10px;margin-bottom:8px}
+.banter-main{flex:1;min-width:0}
+.banter-cat{font-family:var(--font-display);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);display:block;margin-bottom:3px}
+.banter-text{font-size:.9rem;line-height:1.35;color:var(--text-primary);min-height:3.6rem;display:flex;align-items:center}
+.banter-sm .banter-text{min-height:2.45rem;font-size:.85rem}
+.banter-refresh{flex-shrink:0;width:2.6rem;height:2.6rem;min-width:2.6rem;border:1px solid var(--border-light);border-radius:8px;background:var(--bg-input);color:var(--txt-cyan);font-size:1.2rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;transition:var(--transition)}
+.banter-refresh:hover{background:var(--bg-hover);border-color:var(--accent-cyan)}
+.banter-refresh:active{transform:scale(.94)}
+.banter-group{margin-bottom:6px}
+.banter-group:last-child{margin-bottom:0}
+
+/* round header: wagers label forced onto its own row (h2 is flex-wrap) */
+/* round header: forced line break, then wager label sized to its text (not full width) */
+.round-break{flex-basis:100%;height:0}
+.round-wager-label{font-size:.82rem;padding:3px 10px;margin-top:5px}
+
+/* session-info: restaurant staff free-text box */
+.meta-textarea{width:100%;padding:7px 10px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-body);font-size:.9rem;line-height:1.35;outline:none;resize:vertical;min-height:2.6rem;transition:var(--transition)}
+.meta-textarea:focus{border-color:var(--accent-cyan);box-shadow:0 0 0 2px rgba(0,255,255,.13)}
+
+/* settings: version label + Claude disclaimer */
+.settings-meta{display:flex;flex-direction:column;gap:2px;grid-column:1/-1;margin-top:4px}
+.settings-version{font-family:var(--font-display);font-size:.66rem;font-weight:600;color:var(--text-muted);letter-spacing:.5px}
+.settings-disclaimer{font-size:.62rem;line-height:1.3;color:var(--text-muted)}
